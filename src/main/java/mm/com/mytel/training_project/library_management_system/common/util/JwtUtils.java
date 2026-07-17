@@ -56,6 +56,22 @@ public class JwtUtils {
                 .getBody()
                 .getSubject();
     }
+    
+    public Date extractExpiration(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .getExpiration();
+    }
+
+    public String resolveBearerToken(String authorizationHeader) {
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            return authorizationHeader.substring(7);
+        }
+        return null;
+    }
 
     public long getExpirationTimeInSeconds() {
         return expirationTime / 1000;

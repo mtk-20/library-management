@@ -4,7 +4,9 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import mm.com.mytel.training_project.library_management_system.common.util.JwtUtils;
+import mm.com.mytel.training_project.library_management_system.common.util.TokenBlockUtil;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -13,25 +15,26 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 
 @Component
+@RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtUtils jwtUtil;
-
-    public JwtAuthenticationFilter(JwtUtils jwtUtil) {
-        this.jwtUtil = jwtUtil;
-    }
+    private final TokenBlockUtil tokenBlockUtil;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
-        String token = request.getHeader("Authorization");
+        String token = jwtUtil.resolveBearerToken(request.getHeader("Authorization"));
 
-        if (token != null && token.startsWith("Bearer ")) {
-            token = token.substring(7);
-
+        if (token != null) {
             try {
-                // Validate token and set user context if valid
+                if (tokenBlockUtil.isBlocked(token)) {
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    response.getWriter().write("Unauthorized: Token has been removed");
+                    return;
+                }
+
                 if (jwtUtil.validateToken(token)) {
                     String username = jwtUtil.extractUsername(token);
                     UsernamePasswordAuthenticationToken authentication =
