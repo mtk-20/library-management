@@ -4,4 +4,6 @@ import mm.com.mytel.training_project.library_management_system.entity.Category;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface CategoryRepo extends JpaRepository<Category, Long> {
+
+    boolean existsByCategoryName(String categoryName);
 }

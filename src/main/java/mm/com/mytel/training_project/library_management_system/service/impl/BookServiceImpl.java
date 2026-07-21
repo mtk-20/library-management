@@ -95,6 +95,7 @@ public class BookServiceImpl implements BookService {
         entity.setDescription(bookUpdateRequest.getDescription());
         entity.setTotalCopies(bookUpdateRequest.getTotalCopies());
         bookRepo.save(entity);
+
         return responseFactory.buildSuccess(
                 HttpStatus.OK,
                 entity,
@@ -106,8 +107,9 @@ public class BookServiceImpl implements BookService {
     //    delete book
     @Override
     public ResponseEntity<Basic> deleteBook(Long id) {
-        Book entity = bookRepo.findById(id).orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND, "Book not found."));
+        bookRepo.findById(id).orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND, "Book not found."));
         bookRepo.deleteById(id);
+
         return responseFactory.buildSuccess(
                 HttpStatus.OK,
                 null,
@@ -124,9 +126,7 @@ public class BookServiceImpl implements BookService {
 
         Map<String, Object> response = new HashMap<>();
         response.put("books", entities);
-        response.put("currentPage", entities.getNumber());
-        response.put("totalItems", entities.getTotalElements());
-        response.put("totalPages", entities.getTotalPages());
+
         return responseFactory.buildSuccess(
                 HttpStatus.OK,
                 response,
@@ -135,6 +135,7 @@ public class BookServiceImpl implements BookService {
         );
     }
 
+    //    filter books
     @Override
     public ResponseEntity<Basic> searchBook(BookSearchRequest bookSearchRequest) {
         Pageable pageable = PageRequest.of(bookSearchRequest.getPage(), bookSearchRequest.getSize());
@@ -143,9 +144,6 @@ public class BookServiceImpl implements BookService {
 
         Map<String, Object> response = new HashMap<>();
         response.put("books", bookPage);
-        response.put("currentPage", bookPage.getNumber());
-        response.put("totalItems", bookPage.getTotalElements());
-        response.put("totalPages", bookPage.getTotalPages());
 
         return responseFactory.buildSuccess(
                 HttpStatus.OK,
