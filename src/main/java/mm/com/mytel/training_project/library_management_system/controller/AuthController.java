@@ -11,6 +11,7 @@ import mm.com.mytel.training_project.library_management_system.common.util.JwtUt
 import mm.com.mytel.training_project.library_management_system.common.util.TokenBlockUtil;
 import mm.com.mytel.training_project.library_management_system.dto.request.LoginRequest;
 import mm.com.mytel.training_project.library_management_system.dto.response.LoginResponse;
+import mm.com.mytel.training_project.library_management_system.enums.UserRoleName;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -43,6 +44,7 @@ public class AuthController {
             String token = jwtUtils.generateToken(username);
             LoginResponse response = LoginResponse.builder()
                     .username(username)
+                    .role(String.valueOf(UserRoleName.ADMIN))
                     .authenticated(true)
                     .message("Login success.")
                     .token(token)
