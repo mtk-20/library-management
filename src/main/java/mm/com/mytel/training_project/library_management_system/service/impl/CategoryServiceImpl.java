@@ -66,8 +66,8 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public ResponseEntity<Basic> deleteCategory(Long id) {
-        categoryRepo.findById(id).orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND, "Category not found."));
-        categoryRepo.deleteById(id);
+        Category entity = categoryRepo.findById(id).orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND, "Category not found."));
+        categoryRepo.delete(entity);
 
         return responseFactory.buildSuccess(
                 HttpStatus.OK,
@@ -80,7 +80,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public ResponseEntity<Basic> listAllCategories(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<Category> entities = categoryRepo.findAll(pageable);
+        Page<Category> entities = categoryRepo.findAllCategories(pageable);
 
         Map<String, Object> response = new HashMap<>();
         response.put("categories", entities);

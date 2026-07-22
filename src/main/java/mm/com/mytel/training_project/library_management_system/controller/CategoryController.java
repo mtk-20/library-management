@@ -2,7 +2,6 @@ package mm.com.mytel.training_project.library_management_system.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import mm.com.mytel.training_project.library_management_system.dto.request.BookUpdateRequest;
 import mm.com.mytel.training_project.library_management_system.dto.request.CategoryRequest;
 import mm.com.mytel.training_project.library_management_system.service.CategoryService;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +25,7 @@ public class CategoryController {
     }
 
     @DeleteMapping()
-    public ResponseEntity<?> handleDeleteBCategory(@RequestParam Long id) {
+    public ResponseEntity<?> handleDeleteCategory(@RequestParam Long id) {
         return categoryService.deleteCategory(id);
     }
 
