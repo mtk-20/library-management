@@ -107,8 +107,8 @@ public class BookServiceImpl implements BookService {
     //    delete book
     @Override
     public ResponseEntity<Basic> deleteBook(Long id) {
-        bookRepo.findById(id).orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND, "Book not found."));
-        bookRepo.deleteById(id);
+        Book entity = bookRepo.findById(id).orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND, "Book not found."));
+        bookRepo.delete(entity);
 
         return responseFactory.buildSuccess(
                 HttpStatus.OK,
