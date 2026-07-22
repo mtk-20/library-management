@@ -122,7 +122,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public ResponseEntity<Basic> listAllBooks(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<Book> entities = bookRepo.findAllBooks(pageable);
+        Page<Book> entities = bookRepo.findAllByOrderByPublicationYearDescIdAsc(pageable);
 
         Map<String, Object> response = new HashMap<>();
         response.put("books", entities);

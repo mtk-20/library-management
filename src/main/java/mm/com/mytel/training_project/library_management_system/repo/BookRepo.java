@@ -27,8 +27,7 @@ public interface BookRepo extends JpaRepository<Book, Long> {
                            Pageable pageable
     );
 
-    @Query("SELECT b FROM Book b ORDER BY b.publicationYear DESC, b.id ASC")
-    Page<Book> findAllBooks(Pageable pageable);
+    Page<Book> findAllByOrderByPublicationYearDescIdAsc(Pageable pageable);
 
     boolean existsByAuthorId(Long id);
 }

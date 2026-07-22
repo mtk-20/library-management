@@ -11,6 +11,5 @@ public interface CategoryRepo extends JpaRepository<Category, Long> {
 
     boolean existsByCategoryName(String categoryName);
 
-    @Query("SELECT c FROM Category c ORDER BY c.categoryName ASC")
-    Page<Category> findAllCategories(Pageable pageable);
+    Page<Category> findAllByOrderByCategoryNameAsc(Pageable pageable);
 }

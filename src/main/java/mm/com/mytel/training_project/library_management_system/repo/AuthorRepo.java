@@ -11,6 +11,5 @@ public interface AuthorRepo extends JpaRepository<Author, Long> {
 
     boolean existsByAuthorName(String authorName);
 
-    @Query("SELECT a FROM Author a ORDER BY a.authorName ASC")
-    Page<Author> findAllAuthors(Pageable pageable);
+    Page<Author> findAllByOrderByAuthorNameAsc(Pageable pageable);
 }

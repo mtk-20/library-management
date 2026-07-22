@@ -80,7 +80,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public ResponseEntity<Basic> listAllCategories(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<Category> entities = categoryRepo.findAllCategories(pageable);
+        Page<Category> entities = categoryRepo.findAllByOrderByCategoryNameAsc(pageable);
 
         Map<String, Object> response = new HashMap<>();
         response.put("categories", entities);

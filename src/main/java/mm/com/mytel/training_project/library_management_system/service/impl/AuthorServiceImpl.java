@@ -93,7 +93,7 @@ public class AuthorServiceImpl implements AuthorService {
     @Override
     public ResponseEntity<Basic> listAllAuthors(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<Author> entities = authorRepo.findAllAuthors(pageable);
+        Page<Author> entities = authorRepo.findAllByOrderByAuthorNameAsc(pageable);
 
         Map<String, Object> response = new HashMap<>();
         response.put("authors", entities);
