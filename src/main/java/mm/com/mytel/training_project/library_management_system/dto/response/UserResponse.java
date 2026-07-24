@@ -1,14 +1,12 @@
 package mm.com.mytel.training_project.library_management_system.dto.response;
 
-import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 @Data
-public class UserDto {
+public class UserResponse {
 
-    @NotBlank
+    private Long id;
     private String name;
-
-    @NotBlank
-    private String role;
+    private Long roleId;
+    private String roleName;
 }

@@ -8,27 +8,27 @@ import org.springframework.stereotype.Component;
 @Component
 public class ResponseFactoryForException {
 
-    public ResponseEntity<Object> badRequest(String errorCode, String message) {
+    public ResponseEntity<Basic> badRequest(String errorCode, String message) {
         return createResponse(HttpStatus.BAD_REQUEST, errorCode, message);
     }
 
-    public ResponseEntity<Object> unauthorized(String errorCode, String message) {
+    public ResponseEntity<Basic> unauthorized(String errorCode, String message) {
         return createResponse(HttpStatus.UNAUTHORIZED, errorCode, message);
     }
 
-    public ResponseEntity<Object> forbidden(String errorCode, String message) {
+    public ResponseEntity<Basic> forbidden(String errorCode, String message) {
         return createResponse(HttpStatus.FORBIDDEN, errorCode, message);
     }
 
-    public ResponseEntity<Object> notFound(String errorCode, String message) {
+    public ResponseEntity<Basic> notFound(String errorCode, String message) {
         return createResponse(HttpStatus.NOT_FOUND, errorCode, message);
     }
 
-    public ResponseEntity<Object> internalError(String errorCode, String message) {
+    public ResponseEntity<Basic> internalError(String errorCode, String message) {
         return createResponse(HttpStatus.INTERNAL_SERVER_ERROR, errorCode, message);
     }
 
-    private ResponseEntity<Object> createResponse(HttpStatus status, String errorCode, String message) {
+    private ResponseEntity<Basic> createResponse(HttpStatus status, String errorCode, String message) {
         Basic basic = new Basic();
         basic.setSuccess(false);
         basic.setResult(null);

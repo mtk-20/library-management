@@ -10,7 +10,6 @@ import mm.com.mytel.training_project.library_management_system.dto.request.Autho
 import mm.com.mytel.training_project.library_management_system.dto.request.AuthorUpdateRequest;
 import mm.com.mytel.training_project.library_management_system.dto.response.AuthorResponse;
 import mm.com.mytel.training_project.library_management_system.entity.Author;
-import mm.com.mytel.training_project.library_management_system.entity.Category;
 import mm.com.mytel.training_project.library_management_system.repo.AuthorRepo;
 import mm.com.mytel.training_project.library_management_system.repo.BookRepo;
 import mm.com.mytel.training_project.library_management_system.service.AuthorService;
