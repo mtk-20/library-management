@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import mm.com.mytel.training_project.library_management_system.enums.MemberStatus;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -21,7 +21,7 @@ public class Member {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false)
     private String memberName;
 
     @Column(unique = true, nullable = false)
@@ -34,8 +34,12 @@ public class Member {
     private String address;
 
     @Column(nullable = false)
-    private LocalDate registrationDate;
+    private LocalDateTime registerTime;
 
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private MemberStatus memberStatus;
+
+    @Column(nullable = false)
+    private Long roleId;
 }
