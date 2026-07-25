@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import mm.com.mytel.training_project.library_management_system.enums.BorrowStatus;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Entity
@@ -33,11 +34,11 @@ public class BorrowRecord {
     @Column(nullable = false)
     private LocalDate dueDate;
 
-    @Column(nullable = false)
+    @Column
     private LocalDate returnDate;
 
     @Column(nullable = false)
-    private Long fineAmount;
+    private BigDecimal fineAmount;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

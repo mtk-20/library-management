@@ -12,6 +12,9 @@ public class MemberRequest {
     private String memberName;
 
     @NotBlank
+    private String password;
+
+    @NotBlank
     @Email(message = "Invalid email format")
     private String email;
 

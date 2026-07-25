@@ -6,9 +6,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.Optional;
+
 public interface MemberRepo extends JpaRepository<Member, Long> {
 
     Page<Member> findByMemberStatusOrderByRegisterTimeAsc(MemberStatus memberStatus, Pageable pageable);
+
+    Optional<Member> findByUserId(Long userId);
 
     boolean existsByMemberName(String memberName);
 

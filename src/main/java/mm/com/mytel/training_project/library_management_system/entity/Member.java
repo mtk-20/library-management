@@ -42,4 +42,7 @@ public class Member {
 
     @Column(nullable = false)
     private Long roleId;
+
+    @Column
+    private Long userId;
 }

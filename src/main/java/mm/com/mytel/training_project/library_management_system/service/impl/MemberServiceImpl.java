@@ -1,5 +1,6 @@
 package mm.com.mytel.training_project.library_management_system.service.impl;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import mm.com.mytel.training_project.library_management_system.common.constant.ErrorCode;
@@ -12,16 +13,19 @@ import mm.com.mytel.training_project.library_management_system.dto.request.Membe
 import mm.com.mytel.training_project.library_management_system.dto.response.MemberResponse;
 import mm.com.mytel.training_project.library_management_system.entity.Member;
 import mm.com.mytel.training_project.library_management_system.entity.Role;
+import mm.com.mytel.training_project.library_management_system.entity.User;
 import mm.com.mytel.training_project.library_management_system.enums.MemberStatus;
 import mm.com.mytel.training_project.library_management_system.enums.UserRoleName;
 import mm.com.mytel.training_project.library_management_system.repo.MemberRepo;
 import mm.com.mytel.training_project.library_management_system.repo.RoleRepo;
+import mm.com.mytel.training_project.library_management_system.repo.UserRepo;
 import mm.com.mytel.training_project.library_management_system.service.MemberService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -36,49 +40,68 @@ public class MemberServiceImpl implements MemberService {
 
     private final MemberRepo memberRepo;
     private final RoleRepo roleRepo;
+    private final UserRepo userRepo;
     private final ResponseFactory responseFactory;
     private final ResponseFactoryForException responseFactoryForException;
+    private final PasswordEncoder passwordEncoder;
 
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy hh:mm a");
 
     @Override
+    @Transactional
     public ResponseEntity<Basic> registerMember(MemberRequest memberRequest) {
-            UserRoleName role = UserRoleName.MEMBER;
-            Role memberRole = roleRepo.findByUserRoleName(role).orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND, "Member role not found."));
+        validateMember(memberRequest);
 
-            Member entity = new Member();
-            if (memberRepo.existsByMemberName(memberRequest.getMemberName())) {
-                throw new CommonException(ErrorCode.DUPLICATE, "Username already registered.");
-            }
-            entity.setMemberName(memberRequest.getMemberName());
-            if (memberRepo.existsByEmail(memberRequest.getEmail())) {
-                throw new CommonException(ErrorCode.DUPLICATE, "Email already registered.");
-            }
-            entity.setEmail(memberRequest.getEmail());
-            if (memberRepo.existsByPhoneNumber(memberRequest.getPhoneNumber())) {
-                throw new CommonException(ErrorCode.DUPLICATE, "Phone Number already registered.");
-            }
-            entity.setPhoneNumber(memberRequest.getPhoneNumber());
-            entity.setAddress(memberRequest.getAddress());
-            entity.setRegisterTime((LocalDateTime.now()));
-            entity.setMemberStatus(MemberStatus.ACTIVE);
-            entity.setRoleId(memberRole.getId());
-            memberRepo.save(entity);
+        Role memberRole = roleRepo.findByUserRoleName(UserRoleName.MEMBER).orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND, "Member role not found."));
 
-            MemberResponse response = new MemberResponse();
-            response.setMemberName(entity.getMemberName());
-            response.setEmail(entity.getEmail());
-            response.setPhoneNumber(entity.getPhoneNumber());
-            response.setAddress(entity.getAddress());
-            response.setRegisterTime(entity.getRegisterTime().format(formatter));
-            response.setMemberStatus(entity.getMemberStatus());
+        // Create User
+        User user = User.builder()
+                .userName(memberRequest.getMemberName())
+                .password(passwordEncoder.encode(memberRequest.getPassword()))
+                .roleId(memberRole.getId())
+                .build();
+        user = userRepo.save(user);
 
-            return responseFactory.buildSuccess(
-                    HttpStatus.CREATED,
-                    response,
-                    ErrorCode.CREATED,
-                    "Member register success."
-            );
+        // Create Member
+        Member member = new Member();
+        member.setUserId(user.getId());
+        member.setMemberName(memberRequest.getMemberName());
+        member.setEmail(memberRequest.getEmail());
+        member.setPhoneNumber(memberRequest.getPhoneNumber());
+        member.setAddress(memberRequest.getAddress());
+        member.setRegisterTime(LocalDateTime.now());
+        member.setMemberStatus(MemberStatus.ACTIVE);
+        member.setRoleId(memberRole.getId());
+        Member savedMember = memberRepo.save(member);
+
+        // Build Response
+        MemberResponse response = new MemberResponse();
+        response.setMemberName(savedMember.getMemberName());
+        response.setEmail(savedMember.getEmail());
+        response.setPhoneNumber(savedMember.getPhoneNumber());
+        response.setAddress(savedMember.getAddress());
+        response.setRegisterTime(savedMember.getRegisterTime().format(formatter));
+        response.setMemberStatus(savedMember.getMemberStatus());
+
+        return responseFactory.buildSuccess(
+                HttpStatus.CREATED,
+                response,
+                ErrorCode.CREATED,
+                "Member register success."
+        );
+    }
+
+    private void validateMember(MemberRequest memberRequest) {
+
+        if (userRepo.existsByUserName(memberRequest.getMemberName())) {
+            throw new CommonException(ErrorCode.DUPLICATE, "Member Name already registered.");
+        }
+        if (memberRepo.existsByEmail(memberRequest.getEmail())) {
+            throw new CommonException(ErrorCode.DUPLICATE, "Email already registered.");
+        }
+        if (memberRepo.existsByPhoneNumber(memberRequest.getPhoneNumber())) {
+            throw new CommonException(ErrorCode.DUPLICATE, "Phone number already registered.");
+        }
     }
 
     @Override
