@@ -1,10 +1,7 @@
 package mm.com.mytel.training_project.library_management_system.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
 @Getter
@@ -12,6 +9,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "users")
+@Builder
 public class User {
 
     @Id
@@ -19,7 +17,10 @@ public class User {
     private Long id;
 
     @Column(unique = true, nullable = false)
-    private String name;
+    private String userName;
+
+    @Column(nullable = false)
+    private String password;
 
     @Column(nullable = false)
     private Long roleId;
