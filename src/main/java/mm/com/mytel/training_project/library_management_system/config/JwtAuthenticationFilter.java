@@ -9,6 +9,8 @@ import mm.com.mytel.training_project.library_management_system.common.util.JwtUt
 import mm.com.mytel.training_project.library_management_system.common.util.TokenBlockUtil;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -20,6 +22,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtUtils jwtUtil;
     private final TokenBlockUtil tokenBlockUtil;
+    private final UserDetailsService userDetailsService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -37,8 +40,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                 if (jwtUtil.validateToken(token)) {
                     String username = jwtUtil.extractUsername(token);
+                    UserDetails userDetails = userDetailsService.loadUserByUsername(username);
                     UsernamePasswordAuthenticationToken authentication =
-                            new UsernamePasswordAuthenticationToken(username, null, null);
+                            new UsernamePasswordAuthenticationToken(username, null, userDetails.getAuthorities());
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                 }
             } catch (Exception e) {

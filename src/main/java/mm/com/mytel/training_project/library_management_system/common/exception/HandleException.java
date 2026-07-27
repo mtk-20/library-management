@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import mm.com.mytel.training_project.library_management_system.common.constant.ErrorCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
@@ -14,6 +15,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 public class HandleException extends ResponseEntityExceptionHandler {
 
     private final ResponseFactoryForException responseFactory;
+    private final ResponseFactoryForException responseFactoryForException;
 
     @ExceptionHandler(CommonException.class)
     public ResponseEntity<?> handleCommonException(CommonException e) {
@@ -43,5 +45,11 @@ public class HandleException extends ResponseEntityExceptionHandler {
     public ResponseEntity<?> handleExceptions(Exception e) {
         log.error("Unexpected Exception: ", e);
         return responseFactory.internalError(ErrorCode.INTERNAL_SERVER_ERROR, "An internal server error occurred. Please contact support.");
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<?> handleAccessDenied(AccessDeniedException e) {
+        log.error("Access Denied Exception: ", e);
+        return responseFactoryForException.forbidden(ErrorCode.FORBIDDEN, "Access denied.");
     }
 }

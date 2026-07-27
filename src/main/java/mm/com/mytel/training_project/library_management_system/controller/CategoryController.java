@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import mm.com.mytel.training_project.library_management_system.dto.request.CategoryRequest;
 import mm.com.mytel.training_project.library_management_system.service.CategoryService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -14,26 +15,31 @@ public class CategoryController {
 
     private final CategoryService categoryService;
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'LIBRARIAN')")
     @PostMapping()
     public ResponseEntity<?> handleAddCategory(@Valid @RequestBody CategoryRequest categoryRequest) {
         return categoryService.addCategory(categoryRequest);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'LIBRARIAN')")
     @PatchMapping()
     public ResponseEntity<?> handleUpdateCategory(@RequestParam Long id, @Valid @RequestBody CategoryRequest categoryRequest) {
         return categoryService.updateCategory(id, categoryRequest);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @DeleteMapping()
     public ResponseEntity<?> handleDeleteCategory(@RequestParam Long id) {
         return categoryService.deleteCategory(id);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'LIBRARIAN', 'MEMBER')")
     @GetMapping()
     public ResponseEntity<?> handleListAllCategories(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
         return categoryService.listAllCategories(page, size);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'LIBRARIAN')")
     @GetMapping("/id")
     public ResponseEntity<?> handleGetCategoryById(@RequestParam Long id) {
         return categoryService.getCategoryById(id);

@@ -9,6 +9,7 @@ import mm.com.mytel.training_project.library_management_system.enums.UserRoleNam
 import mm.com.mytel.training_project.library_management_system.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -20,11 +21,13 @@ public class UserController {
     private final UserService userService;
     private final ResponseFactory responseFactory;
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'LIBRARIAN')")
     @GetMapping()
     public ResponseEntity<?> handleGetAllUsers() {
         return userService.getAllUsers();
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestParam UserRoleName roleName, @RequestParam String username, @RequestParam String password) {
         log.info("Registering user={}, role={}", username, roleName);
