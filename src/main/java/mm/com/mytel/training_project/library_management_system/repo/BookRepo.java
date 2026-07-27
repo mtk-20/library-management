@@ -9,6 +9,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface BookRepo extends JpaRepository<Book, Long> {
 
@@ -33,4 +35,6 @@ public interface BookRepo extends JpaRepository<Book, Long> {
     Page<Book> findAllByOrderByPublicationYearDescIdAsc(Pageable pageable);
 
     boolean existsByAuthorId(Long id);
+
+    List<Book> findByAuthorId(Long authorId);
 }

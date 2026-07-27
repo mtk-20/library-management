@@ -8,8 +8,11 @@ import mm.com.mytel.training_project.library_management_system.common.response.B
 import mm.com.mytel.training_project.library_management_system.common.response.ResponseFactory;
 import mm.com.mytel.training_project.library_management_system.dto.request.AuthorRequest;
 import mm.com.mytel.training_project.library_management_system.dto.request.AuthorUpdateRequest;
+import mm.com.mytel.training_project.library_management_system.dto.response.AuthorDetailsResponse;
 import mm.com.mytel.training_project.library_management_system.dto.response.AuthorResponse;
+import mm.com.mytel.training_project.library_management_system.dto.response.BooksByAuthorResponse;
 import mm.com.mytel.training_project.library_management_system.entity.Author;
+import mm.com.mytel.training_project.library_management_system.entity.Book;
 import mm.com.mytel.training_project.library_management_system.repo.AuthorRepo;
 import mm.com.mytel.training_project.library_management_system.repo.BookRepo;
 import mm.com.mytel.training_project.library_management_system.service.AuthorService;
@@ -21,6 +24,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -108,11 +112,23 @@ public class AuthorServiceImpl implements AuthorService {
     @Override
     public ResponseEntity<Basic> getAuthorById(Long id) {
         Author entity = authorRepo.findById(id).orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND, "Author Not Found"));
+        List<Book> booksByAuthor = bookRepo.findByAuthorId(entity.getId());
+        List<BooksByAuthorResponse> booksByAuthorResponses = booksByAuthor.stream().map(
+                b -> BooksByAuthorResponse.builder()
+                        .isbn(b.getIsbn())
+                        .title(b.getTitle())
+                        .publisher(b.getPublisher())
+                        .publicationYear(b.getPublicationYear())
+                        .language(b.getLanguage())
+                        .description(b.getDescription())
+                        .build()
+        ).toList();
 
-        AuthorResponse response = new AuthorResponse();
+        AuthorDetailsResponse response = new AuthorDetailsResponse();
         response.setAuthorName(entity.getAuthorName());
         response.setBiography(entity.getBiography());
         response.setNationality(entity.getNationality());
+        response.setBooksByAuthor(booksByAuthorResponses);
 
         return responseFactory.buildSuccess(
                 HttpStatus.OK,
