@@ -12,13 +12,10 @@ import mm.com.mytel.training_project.library_management_system.common.util.JwtUt
 import mm.com.mytel.training_project.library_management_system.common.util.TokenBlockUtil;
 import mm.com.mytel.training_project.library_management_system.dto.request.LoginRequest;
 import mm.com.mytel.training_project.library_management_system.dto.response.LoginResponse;
-import mm.com.mytel.training_project.library_management_system.dto.response.UserResponse;
 import mm.com.mytel.training_project.library_management_system.entity.Role;
 import mm.com.mytel.training_project.library_management_system.entity.User;
-import mm.com.mytel.training_project.library_management_system.enums.UserRoleName;
 import mm.com.mytel.training_project.library_management_system.repo.RoleRepo;
 import mm.com.mytel.training_project.library_management_system.repo.UserRepo;
-import mm.com.mytel.training_project.library_management_system.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -27,7 +24,10 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
@@ -37,21 +37,13 @@ public class AuthController {
 
     private final UserRepo userRepo;
     private final RoleRepo roleRepo;
-    private final UserService userService;
+
     private final ResponseFactory responseFactory;
     private final ResponseFactoryForException responseFactoryForException;
     private final AuthenticationManager authenticationManager;
     private final JwtUtils jwtUtils;
     private final TokenBlockUtil tokenBlockUtil;
     private final PasswordEncoder passwordEncoder;
-
-    @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestParam UserRoleName roleName, @RequestParam String username, @RequestParam String password) {
-        log.info("Registering user={}, role={}", username, roleName);
-        UserResponse user = userService.register(roleName, username, password);
-
-        return responseFactory.buildSuccess(HttpStatus.CREATED, user, ErrorCode.CREATED, "Registration success.");
-    }
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@Valid @RequestBody LoginRequest request, HttpServletRequest httpRequest) {
