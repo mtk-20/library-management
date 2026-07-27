@@ -160,4 +160,24 @@ public class MemberServiceImpl implements MemberService {
                 "Member list request success."
         );
     }
+
+    @Override
+    public ResponseEntity<?> getMemberById(Long id) {
+        Member entity = memberRepo.findById(id).orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND, "Member not found."));
+
+        MemberResponse response = new MemberResponse();
+        response.setMemberName(entity.getMemberName());
+        response.setEmail(entity.getEmail());
+        response.setPhoneNumber(entity.getPhoneNumber());
+        response.setAddress(entity.getAddress());
+        response.setRegisterTime(entity.getRegisterTime().format(formatter));
+        response.setMemberStatus(entity.getMemberStatus());
+
+        return responseFactory.buildSuccess(
+                HttpStatus.CREATED,
+                response,
+                ErrorCode.CREATED,
+                "Member request success."
+        );
+    }
 }

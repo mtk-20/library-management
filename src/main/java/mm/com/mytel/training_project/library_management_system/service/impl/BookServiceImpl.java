@@ -152,4 +152,16 @@ public class BookServiceImpl implements BookService {
                 "Book search query success."
         );
     }
+
+    @Override
+    public ResponseEntity<?> getBookById(Long id) {
+        Book entity = bookRepo.findById(id).orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND, "Book Not Found."));
+
+        return responseFactory.buildSuccess(
+                HttpStatus.OK,
+                entity,
+                ErrorCode.OK,
+                "Book request success."
+        );
+    }
 }

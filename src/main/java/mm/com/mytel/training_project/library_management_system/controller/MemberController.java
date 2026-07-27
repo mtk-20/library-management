@@ -36,4 +36,9 @@ public class MemberController {
     public ResponseEntity<?> handleListAllMembers(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
         return memberService.listAllMembers(page, size);
     }
+
+    @GetMapping("/id")
+    public ResponseEntity<?> handleGetMemberById(@RequestParam Long id) {
+        return memberService.getMemberById(id);
+    }
 }

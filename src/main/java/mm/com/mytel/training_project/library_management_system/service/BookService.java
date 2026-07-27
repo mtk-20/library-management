@@ -17,4 +17,6 @@ public interface BookService {
     ResponseEntity<Basic> listAllBooks(int page, int size);
 
     ResponseEntity<Basic> searchBook(BookSearchRequest bookSearchRequest);
+
+    ResponseEntity<?> getBookById(Long id);
 }

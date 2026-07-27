@@ -15,4 +15,6 @@ public interface AuthorService {
     ResponseEntity<Basic> deleteAuthor(Long id);
 
     ResponseEntity<Basic> listAllAuthors(int page, int size);
+
+    ResponseEntity<Basic> getAuthorById(Long id);
 }

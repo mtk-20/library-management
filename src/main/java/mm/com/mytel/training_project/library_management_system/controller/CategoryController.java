@@ -33,4 +33,9 @@ public class CategoryController {
     public ResponseEntity<?> handleListAllCategories(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
         return categoryService.listAllCategories(page, size);
     }
+
+    @GetMapping("/id")
+    public ResponseEntity<?> handleGetCategoryById(@RequestParam Long id) {
+        return categoryService.getCategoryById(id);
+    }
 }

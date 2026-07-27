@@ -92,4 +92,19 @@ public class CategoryServiceImpl implements CategoryService {
                 "Category list request success."
         );
     }
+
+    @Override
+    public ResponseEntity<?> getCategoryById(Long id) {
+        Category entity = categoryRepo.findById(id).orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND, "Category not found."));
+
+        CategoryResponse response = new CategoryResponse();
+        response.setCategoryName(entity.getCategoryName());
+
+        return responseFactory.buildSuccess(
+                HttpStatus.OK,
+                response,
+                ErrorCode.OK,
+                "Category request success."
+        );
+    }
 }

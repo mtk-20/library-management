@@ -42,6 +42,11 @@ public class BookController {
         return bookService.searchBook(bookSearchRequest);
     }
 
+    @GetMapping("/id")
+    public ResponseEntity<?> handleGetBookById(@RequestParam Long id) {
+        return bookService.getBookById(id);
+    }
+
     @PostMapping("/borrow")
     public ResponseEntity<?> handleBorrowBook(@RequestBody BookBorrowRequest bookBorrowRequest) {
         return bookBorrowAndReturnService.borrowBook(bookBorrowRequest);

@@ -104,4 +104,21 @@ public class AuthorServiceImpl implements AuthorService {
                 "Author list request success."
         );
     }
+
+    @Override
+    public ResponseEntity<Basic> getAuthorById(Long id) {
+        Author entity = authorRepo.findById(id).orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND, "Author Not Found"));
+
+        AuthorResponse response = new AuthorResponse();
+        response.setAuthorName(entity.getAuthorName());
+        response.setBiography(entity.getBiography());
+        response.setNationality(entity.getNationality());
+
+        return responseFactory.buildSuccess(
+                HttpStatus.OK,
+                response,
+                ErrorCode.OK,
+                "Author request success."
+        );
+    }
 }

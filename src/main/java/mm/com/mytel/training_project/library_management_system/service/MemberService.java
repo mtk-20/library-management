@@ -14,4 +14,6 @@ public interface MemberService {
     ResponseEntity<Basic> deleteMember(Long id);
 
     ResponseEntity<Basic> listAllMembers(int page, int size);
+
+    ResponseEntity<?> getMemberById(Long id);
 }

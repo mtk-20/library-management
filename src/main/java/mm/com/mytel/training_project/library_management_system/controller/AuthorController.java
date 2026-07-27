@@ -4,7 +4,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import mm.com.mytel.training_project.library_management_system.dto.request.AuthorRequest;
 import mm.com.mytel.training_project.library_management_system.dto.request.AuthorUpdateRequest;
-import mm.com.mytel.training_project.library_management_system.dto.request.CategoryRequest;
 import mm.com.mytel.training_project.library_management_system.service.AuthorService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -34,5 +33,10 @@ public class AuthorController {
     @GetMapping()
     public ResponseEntity<?> handleListAllAuthors(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
         return authorService.listAllAuthors(page, size);
+    }
+
+    @GetMapping("/id")
+    public ResponseEntity<?> handleGetAuthorById(@RequestParam Long id) {
+        return authorService.getAuthorById(id);
     }
 }

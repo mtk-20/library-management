@@ -13,4 +13,6 @@ public interface CategoryService {
     ResponseEntity<Basic> deleteCategory(Long id);
 
     ResponseEntity<Basic> listAllCategories(int page, int size);
+
+    ResponseEntity<?> getCategoryById(Long id);
 }
