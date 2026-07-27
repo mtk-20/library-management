@@ -2,9 +2,9 @@ package mm.com.mytel.training_project.library_management_system.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import mm.com.mytel.training_project.library_management_system.dto.request.BookRequest;
-import mm.com.mytel.training_project.library_management_system.dto.request.BookSearchRequest;
-import mm.com.mytel.training_project.library_management_system.dto.request.BookUpdateRequest;
+import mm.com.mytel.training_project.library_management_system.dto.request.*;
+import mm.com.mytel.training_project.library_management_system.enums.BorrowStatus;
+import mm.com.mytel.training_project.library_management_system.service.BookBorrowAndReturnService;
 import mm.com.mytel.training_project.library_management_system.service.BookService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 public class BookController {
 
     private final BookService bookService;
+    private final BookBorrowAndReturnService bookBorrowAndReturnService;
 
     @PostMapping()
     public ResponseEntity<?> handleAddBook(@Valid @RequestBody BookRequest bookRequest) {
@@ -39,5 +40,25 @@ public class BookController {
     @GetMapping("/filter")
     public ResponseEntity<?> handleSearchBook(@RequestBody BookSearchRequest bookSearchRequest) {
         return bookService.searchBook(bookSearchRequest);
+    }
+
+    @PostMapping("/borrow")
+    public ResponseEntity<?> handleBorrowBook(@RequestBody BookBorrowRequest bookBorrowRequest) {
+        return bookBorrowAndReturnService.borrowBook(bookBorrowRequest);
+    }
+
+    @PostMapping("/return")
+    public ResponseEntity<?> handleReturnBook(@RequestBody BookReturnRequest bookReturnRequest) {
+        return bookBorrowAndReturnService.returnBook(bookReturnRequest);
+    }
+
+    @GetMapping("/track-borrow-history")
+    public ResponseEntity<?> handleTrackBorrowHistory(@RequestParam BorrowStatus status, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+        return bookBorrowAndReturnService.trackBorrowRecord(status, page, size);
+    }
+
+    @GetMapping("/track-due-date")
+    public ResponseEntity<?> handleTrackDueDate(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+        return bookBorrowAndReturnService.trackDueDate(page, size);
     }
 }

@@ -1,6 +1,7 @@
 package mm.com.mytel.training_project.library_management_system.repo;
 
 import mm.com.mytel.training_project.library_management_system.entity.Book;
+import mm.com.mytel.training_project.library_management_system.enums.BookStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -26,6 +27,8 @@ public interface BookRepo extends JpaRepository<Book, Long> {
                            @Param("categoryId") Long categoryId,
                            Pageable pageable
     );
+
+    Page<Book> findByBookStatusAndAvailableCopiesGreaterThan(BookStatus status, Integer availableCopies, Pageable pageable);
 
     Page<Book> findAllByOrderByPublicationYearDescIdAsc(Pageable pageable);
 
