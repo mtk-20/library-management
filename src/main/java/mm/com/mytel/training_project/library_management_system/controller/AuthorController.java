@@ -28,7 +28,7 @@ public class AuthorController {
         return authorService.updateAuthor(id, authorUpdateRequest);
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'LIBRARIAN')")
     @DeleteMapping()
     public ResponseEntity<?> handleDeleteAuthor(@RequestParam Long id) {
         return authorService.deleteAuthor(id);

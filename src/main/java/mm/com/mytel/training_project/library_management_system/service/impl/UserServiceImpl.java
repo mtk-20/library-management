@@ -6,6 +6,7 @@ import mm.com.mytel.training_project.library_management_system.common.constant.E
 import mm.com.mytel.training_project.library_management_system.common.exception.CommonException;
 import mm.com.mytel.training_project.library_management_system.common.response.Basic;
 import mm.com.mytel.training_project.library_management_system.common.response.ResponseFactory;
+import mm.com.mytel.training_project.library_management_system.dto.request.UserUpdateRequest;
 import mm.com.mytel.training_project.library_management_system.dto.response.UserResponse;
 import mm.com.mytel.training_project.library_management_system.entity.Role;
 import mm.com.mytel.training_project.library_management_system.entity.User;
@@ -64,6 +65,27 @@ public class UserServiceImpl implements UserService {
                 .password(passwordEncoder.encode(rawPassword))
                 .roleId(role.getId())
                 .build();
+        return userRepo.save(user);
+    }
+
+    @Override
+    public UserResponse update(Long id, UserUpdateRequest updateRequest) {
+        return userResponse(updateUser(id, updateRequest));
+    }
+
+    @Transactional
+    public User updateUser(Long id, UserUpdateRequest updateRequest) {
+        User user = userRepo.findById(id).orElseThrow(()-> new CommonException(ErrorCode.NOT_FOUND, "User not found."));
+        Role role = roleRepo.findById(user.getRoleId()).orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND, "Role not found."));
+        if (role.getUserRoleName() != UserRoleName.LIBRARIAN) {
+            throw new CommonException(ErrorCode.BAD_REQUEST, "This user is not a librarian.");
+        }
+        if (userRepo.existsByUserName(updateRequest.getUsername())) {
+            throw new CommonException(ErrorCode.BAD_REQUEST, "Username already exists.");
+        }
+        user.setUserName(updateRequest.getUsername());
+        user.setPassword(passwordEncoder.encode(updateRequest.getPassword()));
+
         return userRepo.save(user);
     }
 

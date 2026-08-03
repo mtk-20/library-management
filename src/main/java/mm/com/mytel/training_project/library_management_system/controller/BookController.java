@@ -30,7 +30,7 @@ public class BookController {
         return bookService.updateBook(id, bookUpdateRequest);
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'LIBRARIAN')")
     @DeleteMapping()
     public ResponseEntity<?> handleDeleteBook(@RequestParam Long id) {
         return bookService.deleteBook(id);

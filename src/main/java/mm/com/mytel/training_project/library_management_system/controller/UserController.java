@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import mm.com.mytel.training_project.library_management_system.common.constant.ErrorCode;
 import mm.com.mytel.training_project.library_management_system.common.response.ResponseFactory;
+import mm.com.mytel.training_project.library_management_system.dto.request.UserUpdateRequest;
 import mm.com.mytel.training_project.library_management_system.dto.response.UserResponse;
 import mm.com.mytel.training_project.library_management_system.enums.UserRoleName;
 import mm.com.mytel.training_project.library_management_system.service.UserService;
@@ -34,5 +35,14 @@ public class UserController {
         UserResponse user = userService.register(roleName, username, password);
 
         return responseFactory.buildSuccess(HttpStatus.CREATED, user, ErrorCode.CREATED, "Registration success.");
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    @PatchMapping("/update")
+    public ResponseEntity<?> update(@RequestParam Long id, @RequestBody UserUpdateRequest updateRequest) {
+        log.info("Updating userId={}", id);
+        UserResponse user = userService.update(id, updateRequest);
+
+        return responseFactory.buildSuccess(HttpStatus.OK, user, ErrorCode.OK, "Update success.");
     }
 }

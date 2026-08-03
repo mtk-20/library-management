@@ -27,7 +27,7 @@ public class CategoryController {
         return categoryService.updateCategory(id, categoryRequest);
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'LIBRARIAN')")
     @DeleteMapping()
     public ResponseEntity<?> handleDeleteCategory(@RequestParam Long id) {
         return categoryService.deleteCategory(id);
