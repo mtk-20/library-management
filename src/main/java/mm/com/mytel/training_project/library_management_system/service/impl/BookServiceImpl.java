@@ -92,9 +92,15 @@ public class BookServiceImpl implements BookService {
     @Override
     public ResponseEntity<Basic> updateBook(Long id, BookUpdateRequest bookUpdateRequest) {
         Book entity = bookRepo.findById(id).orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND, "Book not found."));
-        entity.setDescription(bookUpdateRequest.getDescription());
-        entity.setTotalCopies(bookUpdateRequest.getTotalCopies());
-        bookRepo.save(entity);
+        int borrowedCopies = entity.getTotalCopies() - entity.getAvailableCopies();
+        int newTotalCopies = bookUpdateRequest.getTotalCopies();
+
+        if (newTotalCopies < borrowedCopies) {
+            throw new CommonException(ErrorCode.BAD_REQUEST, "Total copies cannot be less than borrowed copies (" + borrowedCopies + ").");
+        }
+
+        entity.setTotalCopies(newTotalCopies);
+        entity.setAvailableCopies(newTotalCopies - borrowedCopies);
 
         return responseFactory.buildSuccess(
                 HttpStatus.OK,

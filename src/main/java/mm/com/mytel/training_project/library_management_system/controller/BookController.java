@@ -54,13 +54,13 @@ public class BookController {
         return bookService.getBookById(id);
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'MEMBER')")
+    @PreAuthorize("hasAnyRole('LIBRARIAN')")
     @PostMapping("/borrow")
     public ResponseEntity<?> handleBorrowBook(@RequestBody BookBorrowRequest bookBorrowRequest) {
         return bookBorrowAndReturnService.borrowBook(bookBorrowRequest);
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'MEMBER')")
+    @PreAuthorize("hasAnyRole('LIBRARIAN')")
     @PostMapping("/return")
     public ResponseEntity<?> handleReturnBook(@RequestBody BookReturnRequest bookReturnRequest) {
         return bookBorrowAndReturnService.returnBook(bookReturnRequest);

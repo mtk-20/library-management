@@ -8,4 +8,7 @@ public class BookBorrowRequest {
 
     @NotNull
     private Long bookId;
+
+    @NotNull
+    private Long memberId;
 }

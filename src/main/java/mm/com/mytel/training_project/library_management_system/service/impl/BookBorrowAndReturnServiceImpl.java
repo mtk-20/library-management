@@ -59,7 +59,7 @@ public class BookBorrowAndReturnServiceImpl implements BookBorrowAndReturnServic
 
     @Override
     public ResponseEntity<?> borrowBook(BookBorrowRequest bookBorrowRequest) {
-        Member member = getCurrentMember();
+        Member member = memberRepo.findById(bookBorrowRequest.getMemberId()).orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND, "Member not found."));
         Long memberId = member.getId();
 
         Book book = bookRepo.findById(bookBorrowRequest.getBookId()).orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND, "Book not found."));
@@ -105,8 +105,9 @@ public class BookBorrowAndReturnServiceImpl implements BookBorrowAndReturnServic
     @Transactional
     @Override
     public ResponseEntity<?> returnBook(BookReturnRequest bookReturnRequest) {
-        Member member = getCurrentMember();
-        BorrowRecord record = borrowRecordRepo.findByIdAndMemberId(bookReturnRequest.getBorrowId(), member.getId())
+        Member member = memberRepo.findById(bookReturnRequest.getMemberId()).orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND, "Member not found."));
+        Long memberId = member.getId();
+        BorrowRecord record = borrowRecordRepo.findByIdAndMemberId(bookReturnRequest.getBorrowId(), memberId)
                 .orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND, "Borrow record not found."));
 
         if (record.getStatus() == BorrowStatus.RETURNED) {
