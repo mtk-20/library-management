@@ -99,6 +99,14 @@ public class BookServiceImpl implements BookService {
             throw new CommonException(ErrorCode.BAD_REQUEST, "Total copies cannot be less than borrowed copies (" + borrowedCopies + ").");
         }
 
+        entity.setIsbn(bookUpdateRequest.getIsbn());
+        entity.setTitle(bookUpdateRequest.getTitle());
+        entity.setAuthorId(bookUpdateRequest.getAuthorId());
+        entity.setCategoryId(bookUpdateRequest.getCategoryId());
+        entity.setPublisher(bookUpdateRequest.getPublisher());
+        entity.setPublicationYear(bookUpdateRequest.getPublicationYear());
+        entity.setLanguage(bookUpdateRequest.getLanguage());
+        entity.setDescription(bookUpdateRequest.getDescription());
         entity.setTotalCopies(newTotalCopies);
         entity.setAvailableCopies(newTotalCopies - borrowedCopies);
 

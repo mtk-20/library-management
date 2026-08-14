@@ -93,7 +93,7 @@ public class MemberServiceImpl implements MemberService {
 
     private void validateMember(MemberRequest memberRequest) {
 
-        if (userRepo.existsByUserName(memberRequest.getMemberName())) {
+        if (memberRepo.existsByMemberNameAndMemberStatus(memberRequest.getMemberName(), MemberStatus.ACTIVE)) {
             throw new CommonException(ErrorCode.DUPLICATE, "Member Name already registered.");
         }
         if (memberRepo.existsByEmail(memberRequest.getEmail())) {
@@ -107,6 +107,8 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public ResponseEntity<Basic> updateMember(Long id, MemberUpdateRequest memberUpdateRequest) {
         Member entity = memberRepo.findById(id).orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND, "Member not found."));
+        User user = userRepo.findById(entity.getUserId()).orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND, "Member's user id not found."));
+
         if (memberUpdateRequest.getMemberName() != null) {
             entity.setMemberName(memberUpdateRequest.getMemberName());
         }
@@ -119,11 +121,14 @@ public class MemberServiceImpl implements MemberService {
         if (memberUpdateRequest.getAddress() != null) {
             entity.setAddress(memberUpdateRequest.getAddress());
         }
-        memberRepo.save(entity);
+        Member savedMember = memberRepo.save(entity);
+
+        user.setUserName(savedMember.getMemberName());
+        userRepo.save(user);
 
         return responseFactory.buildSuccess(
                 HttpStatus.OK,
-                entity,
+                savedMember,
                 ErrorCode.OK,
                 "Member update success."
         );
@@ -131,10 +136,8 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public ResponseEntity<Basic> deleteMember(Long id) {
-        MemberStatus setToInactive = MemberStatus.INACTIVE;
         Member entity = memberRepo.findById(id).orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND, "Member not found."));
-        entity.setMemberStatus(setToInactive);
-        memberRepo.save(entity);
+        memberRepo.delete(entity);
 
         return responseFactory.buildSuccess(
                 HttpStatus.OK,

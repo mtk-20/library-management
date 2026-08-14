@@ -1,6 +1,7 @@
 package mm.com.mytel.training_project.library_management_system.repo;
 
 import mm.com.mytel.training_project.library_management_system.entity.User;
+import mm.com.mytel.training_project.library_management_system.enums.MemberStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
