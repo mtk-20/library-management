@@ -165,10 +165,8 @@ public class BookBorrowAndReturnServiceImpl implements BookBorrowAndReturnServic
 
     @Override
     public ResponseEntity<?> trackBorrowRecord(BorrowStatus status, int page, int size) {
-        Member member = getCurrentMember();
-
         Pageable pageable = PageRequest.of(page, size);
-        Page<BorrowRecord> recordPage = borrowRecordRepo.findByMemberIdAndStatus(member.getId(), status, pageable);
+        Page<BorrowRecord> recordPage = borrowRecordRepo.findByStatus(status, pageable);
 
         Page<BorrowHistoryResponse> response = recordPage.map(record -> {
             Book book = bookRepo.findById(record.getBookId()).orElseThrow(() ->
@@ -180,6 +178,7 @@ public class BookBorrowAndReturnServiceImpl implements BookBorrowAndReturnServic
                     .borrowDate(record.getBorrowDate())
                     .dueDate(record.getDueDate())
                     .returnDate(record.getReturnDate())
+                    .memberId(record.getMemberId())
                     .build();
         });
 

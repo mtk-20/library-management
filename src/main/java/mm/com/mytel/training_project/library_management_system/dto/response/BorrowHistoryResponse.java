@@ -12,4 +12,5 @@ public class BorrowHistoryResponse {
     private LocalDate borrowDate;
     private LocalDate dueDate;
     private LocalDate returnDate;
+    private Long memberId;
 }
